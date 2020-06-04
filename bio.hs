@@ -42,9 +42,9 @@ countBases7 str = map (($ str) . count) "ACGT"
 baseCounters = [countBases, countBases1, countBases2, countBases3,
                 countBases4, countBases5, countBases6, countBases7]
 
-solveCountBases :: IO()
-solveCountBases = interact (unlines . map (unwords . map show) . zipWith ($) baseCounters . cycle . words)
+solveCountBases :: String -> String
+solveCountBases = unlines . map (unwords . map show) . zipWith ($) baseCounters . cycle . words
 
 -- Dispatch a Solver
 main :: IO()
-main = solveCountBases
+main = interact solveCountBases
