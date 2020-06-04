@@ -39,8 +39,12 @@ countBases6 str = map (length . flip filter str . (==)) "ACGT"
 countBases7 :: String -> [Int]
 countBases7 str = map (($ str) . count) "ACGT"
 
+countBases8 :: String -> [Int]
+countBases8 = zipWith ($) (map count "ACGT") . repeat
+
 baseCounters = [countBases, countBases1, countBases2, countBases3,
-                countBases4, countBases5, countBases6, countBases7]
+                countBases4, countBases5, countBases6, countBases7,
+                countBases8]
 
 solveCountBases :: String -> String
 solveCountBases = unlines . map (unwords . map show) . zipWith ($) baseCounters . cycle . words
