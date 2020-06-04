@@ -10,8 +10,8 @@ frequencies :: (Foldable f, Eq a, Ord a) => f a -> [(a, Int)]
 frequencies = map (\x -> (head x, length x)) . group . sort . toList
 
 -- Counting DNA Nucleotides
-countBases :: String -> [Int]
-countBases = map length . group . sort
+countBases0 :: String -> [Int]
+countBases0 = map length . group . sort
 
 countBases1 :: String -> [Int]
 countBases1 = (map count "ACGT" <*>) . pure
@@ -42,7 +42,7 @@ countBases7 str = map (($ str) . count) "ACGT"
 countBases8 :: String -> [Int]
 countBases8 = zipWith ($) (map count "ACGT") . repeat
 
-baseCounters = [countBases, countBases1, countBases2, countBases3,
+baseCounters = [countBases0, countBases1, countBases2, countBases3,
                 countBases4, countBases5, countBases6, countBases7,
                 countBases8]
 
