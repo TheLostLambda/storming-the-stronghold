@@ -9,6 +9,9 @@ count item = length . filter (== item) . toList
 frequencies :: (Foldable f, Eq a, Ord a) => f a -> [(a, Int)]
 frequencies = map (\x -> (head x, length x)) . group . sort . toList
 
+replace :: (Eq a) => a -> a -> [a] -> [a]
+replace a b = map (\x -> if x == a then b else x)
+
 -- Counting DNA Nucleotides
 countBases0 :: String -> [Int]
 countBases0 = map length . group . sort
@@ -49,6 +52,19 @@ baseCounters = [countBases0, countBases1, countBases2, countBases3,
 solveCountBases :: String -> String
 solveCountBases = unlines . map (unwords . map show) . zipWith ($) baseCounters . cycle . words
 
+-- Transcribing DNA into RNA
+transcribe0 :: String -> String
+transcribe0 = replace 'T' 'U'
+
+transcribe1 :: String -> String
+transcribe1 [] = []
+transcribe1 ('T':xs) = 'U' : transcribe1 xs
+transcribe1 (x:xs) = x : transcribe1 xs
+
+transcribers = [transcribe0, transcribe1]
+
+solveTranscribe :: String -> String
+solveTranscribe = unlines . zipWith ($) transcribers . cycle . words
 -- Dispatch a Solver
 main :: IO()
-main = interact solveCountBases
+main = interact solveTranscribe
