@@ -9,8 +9,8 @@ count item = length . filter (== item) . toList
 frequencies :: (Foldable f, Eq a, Ord a) => f a -> [(a, Int)]
 frequencies = map (\x -> (head x, length x)) . group . sort . toList
 
-replace :: (Eq a) => a -> a -> [a] -> [a]
-replace a b = map (\x -> if x == a then b else x)
+replace :: (Eq a, Functor f) => a -> a -> f a -> f a
+replace a b = fmap (\x -> if x == a then b else x)
 
 -- Counting DNA Nucleotides
 countBases0 :: String -> [Int]
@@ -61,7 +61,18 @@ transcribe1 [] = []
 transcribe1 ('T':xs) = 'U' : transcribe1 xs
 transcribe1 (x:xs) = x : transcribe1 xs
 
-transcribers = [transcribe0, transcribe1]
+transcribe2 :: String -> String
+transcribe2 = map pair
+  where pair 'T' = 'U'
+        pair  x  =  x
+
+transcribe3 :: String -> String
+transcribe3 [] = []
+transcribe3 (x:xs)
+  | x == 'T'  = 'U' : transcribe1 xs
+  | otherwise =  x  : transcribe1 xs
+
+transcribers = [transcribe0, transcribe1, transcribe2, transcribe3]
 
 solveTranscribe :: String -> String
 solveTranscribe = unlines . zipWith ($) transcribers . cycle . words
