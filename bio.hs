@@ -1,5 +1,6 @@
 import Data.Foldable
 import Data.List
+import Data.Maybe
 import qualified Data.Map as M
 
 -- Generic Helper Functions
@@ -76,6 +77,42 @@ transcribers = [transcribe0, transcribe1, transcribe2, transcribe3]
 
 solveTranscribe :: String -> String
 solveTranscribe = unlines . zipWith ($) transcribers . cycle . words
+
+-- Reverse Complement
+complement0 :: String -> String
+complement0 = map pair . reverse
+  where pair 'A' = 'T'
+        pair 'C' = 'G'
+        pair 'G' = 'C'
+        pair 'T' = 'A'
+
+complement1 :: String -> String
+complement1 = map (fromJust . flip lookup pairs) . reverse
+  where pairs = concatMap (\[x, y] -> [(x, y), (y, x)]) ["AT", "CG"]
+
+complement2 :: String -> String
+complement2 = map (fromJust . flip lookup pairs) . reverse
+  where pairs = zipWith (,) "ACGT" "TGCA"
+
+complement3 :: String -> String
+complement3 = map pair . reverse
+  where pair x = case x of
+          'A' -> 'T'
+          'C' -> 'G'
+          'G' -> 'C'
+          'T' -> 'A'
+
+complement4 :: String -> String
+complement4 = map (fromJust . flip lookup pairs) . reverse
+  where pairs = map (\[x,y] -> (x,y)) $ concatMap permutations ["AT","CG"]
+
+-- Try some with Data.Map
+
+complementers = [complement0, complement1, complement2, complement3,
+                 complement3]
+
+solveComplement :: String -> String
+solveComplement = unlines . zipWith ($) complementers . cycle . words
 -- Dispatch a Solver
 main :: IO()
-main = interact solveTranscribe
+main = interact solveComplement
